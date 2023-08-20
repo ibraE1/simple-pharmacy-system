@@ -2,6 +2,7 @@ import express, { json, urlencoded } from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
+import userRouter from "./routes/userRoute.js";
 
 const app = express();
 
@@ -10,6 +11,8 @@ config();
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use("/user", userRouter);
 
 const port = 5000;
 
