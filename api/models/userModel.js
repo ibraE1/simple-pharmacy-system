@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, "Please enter your email"],
     unique: true,
     lowercase: true,
-    validate: validator.isEmail,
+    validate: [validator.isEmail, "Please enter a valid email address."],
   },
   name: {
     type: String,
@@ -15,8 +16,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6,
+    required: [true, "Please enter a password"],
+    minlength: [6, "Please enter a password that is 6 characters or longer"],
     select: false,
   },
   national_id: {
@@ -37,4 +38,10 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export default User = mongoose.model("User", userSchema);
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 12);
+});
+
+export default mongoose.model("User", userSchema);
