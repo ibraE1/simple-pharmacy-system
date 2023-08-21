@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 const signup = async (req, res) => {
   try {
     try {
+      if (await User.findOne({ email: req.body.email })) {
+        return res.status(400).json("This email is already registered");
+      }
+
       const newUser = await User.create({
         email: req.body.email,
         name: req.body.name,
@@ -19,7 +23,7 @@ const signup = async (req, res) => {
       return res.status(400).json(error.message);
     }
   } catch (error) {
-    return res.status(500).json(error.message);
+    return res.status(500).json(error);
   }
 };
 
@@ -39,17 +43,17 @@ const login = async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "15s",
+      expiresIn: "1m",
     });
 
     res.cookie("jwt", token, {
-      maxAge: 15 * 1000,
+      maxAge: 60 * 1000,
       httpOnly: true,
     });
 
     return res.status(200).json({ token, data: { user } });
   } catch (error) {
-    return res.status(500).json(error.message);
+    return res.status(500).json(error);
   }
 };
 
