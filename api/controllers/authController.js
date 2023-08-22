@@ -28,7 +28,7 @@ const signup = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -36,19 +36,12 @@ const login = async (req, res) => {
     }
 
     let user = await User.findOne({ email }).select("+password");
-    if (user) {
-      if (!(await user.comparePassword(password, user.password))) {
-        return res.status(400).json("Incorrect email or password");
-      }
-
-      user.last_login = new Date(Date.now());
-      await user.save();
-    } else {
-      user = await Admin.findOne({ email }).select("+password");
-      if (!user || !(await user.comparePassword(password, user.password))) {
-        return res.status(400).json("Incorrect email or password");
-      }
+    if (!user || !(await user.comparePassword(password, user.password))) {
+      return res.status(400).json("Incorrect email or password");
     }
+
+    user.last_login = new Date(Date.now());
+    await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1m",
@@ -65,4 +58,34 @@ const login = async (req, res) => {
   }
 };
 
-export { signup, login };
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json("Please enter email and password");
+    }
+
+    let user = await Admin.findOne({ email }).select("+password");
+    if (!user || !(await user.comparePassword(password, user.password))) {
+      return res.status(400).json("Incorrect email or password");
+    }
+
+    user.last_login = new Date(Date.now());
+    await user.save();
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1m",
+    });
+
+    res.cookie("jwt", token, {
+      maxAge: 60 * 1000,
+      httpOnly: true,
+    });
+
+    return res.status(200).json({ token, data: { user } });
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+};
+
+export { signup, userLogin, adminLogin };

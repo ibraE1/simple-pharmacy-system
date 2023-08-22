@@ -2,7 +2,6 @@ import express, { json, urlencoded } from "express";
 import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
-import { login, signup } from "./controllers/authController.js";
 import userRouter from "./routes/userRoute.js";
 import adminRouter from "./routes/adminRoute.js";
 import orderRouter from "./routes/orderRoute.js";
@@ -14,9 +13,6 @@ config();
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-
-app.post("/signup", signup);
-app.post("/login", login);
 
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);

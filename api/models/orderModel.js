@@ -27,7 +27,6 @@ const orderSchema = new mongoose.Schema({
   ],
   total_price: {
     type: Number,
-    required: true,
   },
   status: {
     type: String,

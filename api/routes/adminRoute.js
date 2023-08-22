@@ -7,8 +7,11 @@ import {
   updateAdmin,
   deleteAdmin,
 } from "../controllers/adminController.js";
+import { adminLogin } from "../controllers/authController.js";
 
 const router = express.Router();
+
+router.post("/login", adminLogin);
 
 router.use(verifyToken);
 
