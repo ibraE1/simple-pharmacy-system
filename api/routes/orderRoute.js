@@ -7,6 +7,7 @@ import {
   updateOrder,
   deleteOrder,
 } from "../controllers/orderController.js";
+import { validateId } from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -16,14 +17,14 @@ router.post("/", createOrder);
 
 router.use(restrictTo(["doctor"]));
 
-router.patch("/:id", updateOrder);
+router.patch("/:id", validateId(), updateOrder);
 
 router.use(restrictTo(["admin"]));
 
-router.get("/:id", getOrder);
+router.get("/:id", validateId(), getOrder);
 
 router.get("/", getAllOrders);
 
-router.delete("/:id", deleteOrder);
+router.delete("/:id", validateId(), deleteOrder);
 
 export default router;
