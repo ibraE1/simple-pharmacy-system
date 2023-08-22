@@ -8,7 +8,11 @@ import {
   deleteAdmin,
 } from "../controllers/adminController.js";
 import { adminLogin } from "../controllers/authController.js";
-import { validateId } from "../middlewares/validationMiddleware.js";
+import {
+  validateId,
+  validateBody,
+  adminSchema,
+} from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -20,8 +24,15 @@ router.use(restrictTo(["admin"]));
 
 router.get("/:id", validateId(), getAdmin);
 
-router.route("/").get(getAllAdmins).post(createAdmin);
+router
+  .route("/")
+  .get(getAllAdmins)
+  .post(validateBody(adminSchema), createAdmin);
 
-router.route("/:id").all(validateId()).patch(updateAdmin).delete(deleteAdmin);
+router
+  .route("/:id")
+  .all(validateId())
+  .patch(validateBody(adminSchema), updateAdmin)
+  .delete(deleteAdmin);
 
 export default router;

@@ -5,8 +5,13 @@ import {
   getAllMedicines,
   updateMedicine,
   deleteMedicine,
+  createMedicine,
 } from "../controllers/medicineController.js";
-import { validateId } from "../middlewares/validationMiddleware.js";
+import {
+  validateId,
+  validateBody,
+  medicineSchema,
+} from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
 
@@ -14,16 +19,18 @@ router.use(verifyToken);
 
 router.use(restrictTo(["doctor", "admin"]));
 
-router.get("/:id", validateId(), getMedicine);
-
 router.get("/", getAllMedicines);
 
+router.get("/:id", validateId(), getMedicine);
+
 router.use(restrictTo(["admin"]));
+
+router.post("/", validateBody(medicineSchema), createMedicine);
 
 router
   .route("/:id")
   .all(validateId())
-  .patch(updateMedicine)
+  .patch(validateBody(medicineSchema), updateMedicine)
   .delete(deleteMedicine);
 
 export default router;

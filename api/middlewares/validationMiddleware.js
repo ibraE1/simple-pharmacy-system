@@ -7,7 +7,7 @@ const userSchema = joi.object({
   email: joi.string().email().required(),
   name: joi
     .string()
-    .pattern(/^[a-zA-Z]+$/)
+    .pattern(/^(?! )[A-Za-z\s]+$/)
     .required(),
   password: joi.string().alphanum().min(6).required(),
   national_id: joi.number().required(),

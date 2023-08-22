@@ -7,21 +7,25 @@ import {
   updateOrder,
   deleteOrder,
 } from "../controllers/orderController.js";
-import { validateId } from "../middlewares/validationMiddleware.js";
+import {
+  validateId,
+  validateBody,
+  orderSchema,
+} from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
 
 router.use(verifyToken);
 
-router.post("/", createOrder);
+router.post("/", validateBody(orderSchema), createOrder);
 
-router.use(restrictTo(["doctor"]));
-
-router.patch("/:id", validateId(), updateOrder);
-
-router.use(restrictTo(["admin"]));
+router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getOrder);
+
+router.patch("/:id", validateId(), validateBody(orderSchema), updateOrder);
+
+router.use(restrictTo(["admin"]));
 
 router.get("/", getAllOrders);
 

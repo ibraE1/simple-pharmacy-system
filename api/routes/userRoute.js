@@ -21,14 +21,29 @@ router.post("/login", userLogin);
 
 router.use(verifyToken);
 
+router.get(
+  "/me",
+  (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+  },
+  getUser
+);
+
 router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getUser);
+
+router.get("/:id/", validateId(), getUser);
 
 router.get("/", getAllUsers);
 
 router.use(restrictTo(["admin"]));
 
-router.route("/:id").all(validateId()).patch(updateUser).delete(deleteUser);
+router
+  .route("/:id")
+  .all(validateId())
+  .patch(validateBody(userSchema), updateUser)
+  .delete(deleteUser);
 
 export default router;

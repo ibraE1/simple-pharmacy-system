@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/userRoute.js";
 import adminRouter from "./routes/adminRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import medicineRouter from "./routes/medicineRoute.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/order", orderRouter);
+app.use("/medicine", medicineRouter);
 
 const port = 5000;
 
