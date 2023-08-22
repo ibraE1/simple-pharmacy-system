@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  notes: {
+    type: String,
+  },
   last_login: {
     type: Date,
   },

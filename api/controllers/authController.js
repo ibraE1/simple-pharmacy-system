@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import Admin from "../models/adminModel.js";
 import jwt from "jsonwebtoken";
 
 const signup = async (req, res) => {
@@ -34,13 +35,20 @@ const login = async (req, res) => {
       return res.status(400).json("Please enter email and password");
     }
 
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !(await user.comparePassword(password, user.password))) {
-      return res.status(400).json("Incorrect email or password");
-    }
+    let user = await User.findOne({ email }).select("+password");
+    if (user) {
+      if (!(await user.comparePassword(password, user.password))) {
+        return res.status(400).json("Incorrect email or password");
+      }
 
-    user.last_login = new Date(Date.now());
-    await user.save();
+      user.last_login = new Date(Date.now());
+      await user.save();
+    } else {
+      user = await Admin.findOne({ email }).select("+password");
+      if (!user || !(await user.comparePassword(password, user.password))) {
+        return res.status(400).json("Incorrect email or password");
+      }
+    }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1m",
@@ -53,26 +61,8 @@ const login = async (req, res) => {
 
     return res.status(200).json({ token, data: { user } });
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json(error.message);
   }
 };
 
-const verifyToken = async (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (!token) {
-    return res.status(400).json("Please login to access this resource");
-  }
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
-    return res.status(400).json("This user no longer exists on the system");
-  }
-
-  req.user = currentUser;
-
-  next();
-};
-
-export { signup, login, verifyToken };
+export { signup, login };

@@ -1,11 +1,11 @@
 import express from "express";
 import { restrictTo, verifyToken } from "../middlewares/authMiddleware.js";
 import {
-  getUser,
-  getAllUsers,
-  updateUser,
-  deleteUser,
-} from "../controllers/userController.js";
+  getMedicine,
+  getAllMedicines,
+  updateMedicine,
+  deleteMedicine,
+} from "../controllers/medicineController.js";
 
 const router = express.Router();
 
@@ -13,12 +13,12 @@ router.use(verifyToken);
 
 router.use(restrictTo(["doctor", "admin"]));
 
-router.get("/:id", getUser);
+router.get("/:id", getMedicine);
 
-router.get("/", getAllUsers);
+router.get("/", getAllMedicines);
 
 router.use(restrictTo(["admin"]));
 
-router.route("/:id").patch(updateUser).delete(deleteUser);
+router.route("/:id").patch(updateMedicine).delete(deleteMedicine);
 
 export default router;

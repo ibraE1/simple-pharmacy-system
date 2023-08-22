@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
 
 const adminSchema = new mongoose.Schema({
   email: {
@@ -39,4 +40,17 @@ const adminSchema = new mongoose.Schema({
   },
 });
 
-export default Admin = mongoose.model("Admin", adminSchema);
+adminSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 12);
+});
+
+adminSchema.methods.comparePassword = async function (
+  enteredPassword,
+  hashedPassword
+) {
+  return await bcrypt.compare(enteredPassword, hashedPassword);
+};
+
+export default mongoose.model("Admin", adminSchema);
