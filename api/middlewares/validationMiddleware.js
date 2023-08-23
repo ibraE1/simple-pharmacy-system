@@ -17,6 +17,15 @@ const userSchema = joi.object({
   last_login: joi.date(),
 });
 
+const userUpdateSchema = joi.object({
+  email: joi.string().email(),
+  name: joi.string().pattern(/^(?! )[A-Za-z\s]+$/),
+  password: joi.string().alphanum().min(6),
+  avatar_image: joi.string(),
+  addresses: joi.array().items(joi.string()),
+  notes: joi.string(),
+});
+
 const adminSchema = joi.object({
   email: joi.string().email().required(),
   name: joi
@@ -30,6 +39,14 @@ const adminSchema = joi.object({
   role: joi.string().valid("admin", "doctor").required(),
 });
 
+const adminUpdateSchema = joi.object({
+  email: joi.string().email(),
+  name: joi.string().pattern(/^[a-zA-Z]+$/),
+  password: joi.string().alphanum().min(6),
+  avatar_image: joi.string(),
+  blocked: joi.boolean(),
+});
+
 const orderSchema = joi.object({
   user_id: joi.objectId().required(),
   image: joi.string().required(),
@@ -37,7 +54,7 @@ const orderSchema = joi.object({
   items: joi.array().items(
     joi.object({
       medicine_id: joi.objectId().required(),
-      price: joi.number().integer().required(),
+      quantity: joi.number().integer().required(),
     })
   ),
   total_price: joi.number(),
@@ -53,9 +70,35 @@ const orderSchema = joi.object({
     .required(),
 });
 
+const orderUpdateSchema = joi.object({
+  image: joi.string(),
+  address: joi.string(),
+  items: joi.array().items(
+    joi.object({
+      medicine_id: joi.objectId(),
+      quantity: joi.number().integer(),
+    })
+  ),
+  total_price: joi.number(),
+  status: joi
+    .string()
+    .valid(
+      "Processing",
+      "WaitingForUserConfirmation",
+      "Canceled",
+      "Confirmed",
+      "Delivered"
+    ),
+});
+
 const medicineSchema = joi.object({
   name: joi.string().required(),
   price: joi.number().required(),
+});
+
+const medicineUpdateSchema = joi.object({
+  name: joi.string(),
+  price: joi.number(),
 });
 
 const validateBody = (schema) => {
@@ -89,6 +132,10 @@ export {
   adminSchema,
   medicineSchema,
   orderSchema,
+  userUpdateSchema,
+  adminUpdateSchema,
+  medicineUpdateSchema,
+  orderUpdateSchema,
   validateBody,
   validateId,
 };

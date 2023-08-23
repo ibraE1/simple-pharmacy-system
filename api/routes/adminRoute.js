@@ -12,6 +12,7 @@ import {
   validateId,
   validateBody,
   adminSchema,
+  adminUpdateSchema,
 } from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
@@ -32,7 +33,7 @@ router
 router
   .route("/:id")
   .all(validateId())
-  .patch(validateBody(adminSchema), updateAdmin)
+  .patch(validateBody(adminUpdateSchema), updateAdmin)
   .delete(deleteAdmin);
 
 export default router;

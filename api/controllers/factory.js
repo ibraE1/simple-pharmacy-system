@@ -6,9 +6,13 @@ const createOne = (Model) => {
   };
 };
 
-const getOne = (Model) => {
+const getOne = (Model, pop, popOptions = {}) => {
   return async (req, res) => {
-    const document = await Model.findById(req.params.id);
+    let query = Model.findById(req.params.id);
+    if (pop) {
+      query = query.populate(pop, popOptions);
+    }
+    const document = await query;
     if (!document) {
       return res.status(400).json("No document found with that ID");
     }
@@ -27,10 +31,14 @@ const getAll = (Model) => {
 
 const updateOne = (Model) => {
   return async (req, res) => {
-    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const document = await Model.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!document) {
       return res.status(400).json("No document found with that ID");
     }

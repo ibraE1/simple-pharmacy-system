@@ -11,6 +11,7 @@ import {
   validateId,
   validateBody,
   medicineSchema,
+  medicineUpdateSchema,
 } from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
@@ -30,7 +31,7 @@ router.post("/", validateBody(medicineSchema), createMedicine);
 router
   .route("/:id")
   .all(validateId())
-  .patch(validateBody(medicineSchema), updateMedicine)
+  .patch(validateBody(medicineUpdateSchema), updateMedicine)
   .delete(deleteMedicine);
 
 export default router;

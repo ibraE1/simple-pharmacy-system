@@ -11,6 +11,7 @@ import {
   validateId,
   validateBody,
   orderSchema,
+  orderUpdateSchema,
 } from "../middlewares/validationMiddleware.js";
 
 const router = express.Router();
@@ -23,7 +24,12 @@ router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getOrder);
 
-router.patch("/:id", validateId(), validateBody(orderSchema), updateOrder);
+router.patch(
+  "/:id",
+  validateId(),
+  validateBody(orderUpdateSchema),
+  updateOrder
+);
 
 router.use(restrictTo(["admin"]));
 

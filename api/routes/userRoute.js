@@ -9,6 +9,7 @@ import {
 import { signup, userLogin } from "../controllers/authController.js";
 import {
   userSchema,
+  userUpdateSchema,
   validateBody,
   validateId,
 } from "../middlewares/validationMiddleware.js";
@@ -34,8 +35,6 @@ router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getUser);
 
-router.get("/:id/", validateId(), getUser);
-
 router.get("/", getAllUsers);
 
 router.use(restrictTo(["admin"]));
@@ -43,7 +42,7 @@ router.use(restrictTo(["admin"]));
 router
   .route("/:id")
   .all(validateId())
-  .patch(validateBody(userSchema), updateUser)
+  .patch(validateBody(userUpdateSchema), updateUser)
   .delete(deleteUser);
 
 export default router;
