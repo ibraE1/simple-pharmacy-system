@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  let currentUser = await User.findById(decoded.id);
+  let currentUser = await User.findById(decoded.id); //block
   if (!currentUser) {
     currentUser = await Admin.findById(decoded.id);
     if (!currentUser) {

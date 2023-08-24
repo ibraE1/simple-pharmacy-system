@@ -1,5 +1,11 @@
 import Medicine from "../models/medicineModel.js";
-import { getOne, getAll, updateOne, deleteOne, createOne } from "./factory.js";
+import {
+  getOne,
+  getAll,
+  updateOne,
+  deleteOne,
+  createOne,
+} from "../utils/factory.js";
 
 const createMedicine = createOne(Medicine);
 

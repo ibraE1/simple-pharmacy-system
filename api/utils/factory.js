@@ -1,3 +1,5 @@
+import { applyOptions } from "./queryOptions.js";
+
 const createOne = (Model) => {
   return async (req, res) => {
     const document = await Model.create(req.body);
@@ -23,8 +25,8 @@ const getOne = (Model, pop, popOptions = {}) => {
 
 const getAll = (Model) => {
   return async (req, res) => {
-    const documents = await Model.find();
-
+    const query = applyOptions(Model.find(), req);
+    const documents = await query;
     res.status(200).json({ results: documents.length, data: documents });
   };
 };

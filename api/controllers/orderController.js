@@ -1,5 +1,11 @@
 import Order from "../models/orderModel.js";
-import { getOne, getAll, updateOne, deleteOne, createOne } from "./factory.js";
+import {
+  getOne,
+  getAll,
+  updateOne,
+  deleteOne,
+  createOne,
+} from "../utils/factory.js";
 
 const createOrder = createOne(Order);
 

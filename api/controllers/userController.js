@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { getOne, getAll, updateOne, deleteOne } from "./factory.js";
+import { getOne, getAll, updateOne, deleteOne } from "../utils/factory.js";
 
 // const createUser = async (req, res) => {}; USING SIGNUP
 

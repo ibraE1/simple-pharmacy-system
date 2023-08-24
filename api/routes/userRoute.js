@@ -13,6 +13,7 @@ import {
   validateBody,
   validateId,
 } from "../middlewares/validationMiddleware.js";
+import { getAllOrders } from "../controllers/orderController.js";
 
 const router = express.Router();
 
@@ -34,6 +35,16 @@ router.get(
 router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getUser);
+
+router.get(
+  "/:id/orders",
+  validateId(),
+  (req, res, next) => {
+    req.query.user_id = req.params.id;
+    next();
+  },
+  getAllOrders
+);
 
 router.get("/", getAllUsers);
 
