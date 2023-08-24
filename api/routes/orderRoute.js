@@ -1,5 +1,9 @@
 import express from "express";
-import { restrictTo, verifyToken } from "../middlewares/authMiddleware.js";
+import {
+  restrictFields,
+  restrictTo,
+  verifyToken,
+} from "../middlewares/authMiddleware.js";
 import {
   createOrder,
   getOrder,
@@ -18,7 +22,12 @@ const router = express.Router();
 
 router.use(verifyToken);
 
-router.post("/", validateBody(orderSchema), createOrder);
+router.post(
+  "/",
+  restrictFields(["doctor", "admin"], ["status", "items"]),
+  validateBody(orderSchema),
+  createOrder
+);
 
 router.use(restrictTo(["doctor", "admin"]));
 
@@ -27,6 +36,8 @@ router.get("/:id", validateId(), getOrder);
 router.patch(
   "/:id",
   validateId(),
+  restrictFields(["admin"], ["address", "image"]),
+  restrictFields([], ["user_id"]),
   validateBody(orderUpdateSchema),
   updateOrder
 );

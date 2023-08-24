@@ -69,7 +69,9 @@ const adminLogin = async (req, res) => {
     if (!user || !(await user.comparePassword(password, user.password))) {
       return res.status(400).json("Incorrect email or password");
     }
-
+    if (user.blocked == true) {
+      return res.status(400).json("This account has been blocked");
+    }
     user.last_login = new Date(Date.now());
     await user.save();
 

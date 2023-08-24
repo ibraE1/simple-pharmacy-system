@@ -10,7 +10,7 @@ const verifyToken = async (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  let currentUser = await User.findById(decoded.id); //block
+  let currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     currentUser = await Admin.findById(decoded.id);
     if (!currentUser) {
@@ -37,4 +37,17 @@ const restrictTo = (roles) => {
   };
 };
 
-export { verifyToken, restrictTo };
+const restrictFields = (roles, fields) => {
+  return (req, res, next) => {
+    for (let key of Object.keys(req.body)) {
+      if (fields.includes(key) && !roles.includes(req.user.role)) {
+        return res
+          .status(400)
+          .json("You do not have permission to modify " + key);
+      }
+    }
+    next();
+  };
+};
+
+export { verifyToken, restrictTo, restrictFields };

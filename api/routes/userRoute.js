@@ -1,5 +1,9 @@
 import express from "express";
-import { restrictTo, verifyToken } from "../middlewares/authMiddleware.js";
+import {
+  restrictTo,
+  verifyToken,
+  restrictFields,
+} from "../middlewares/authMiddleware.js";
 import {
   getUser,
   getAllUsers,
@@ -32,6 +36,16 @@ router.get(
   getUser
 );
 
+router.get(
+  "/me/orders",
+  validateId(),
+  (req, res, next) => {
+    req.query.user_id = req.user.id;
+    next();
+  },
+  getAllOrders
+);
+
 router.use(restrictTo(["doctor", "admin"]));
 
 router.get("/:id", validateId(), getUser);
@@ -53,7 +67,15 @@ router.use(restrictTo(["admin"]));
 router
   .route("/:id")
   .all(validateId())
-  .patch(validateBody(userUpdateSchema), updateUser)
+  .patch(
+    restrictFields(
+      ["admin"],
+      ["name", "email", "national_id", "addresses", "avatar_image"]
+    ),
+    restrictFields([], ["user_id"]),
+    validateBody(userUpdateSchema),
+    updateUser
+  )
   .delete(deleteUser);
 
 export default router;

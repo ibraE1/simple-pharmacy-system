@@ -30,7 +30,7 @@ const adminSchema = joi.object({
   email: joi.string().email().required(),
   name: joi
     .string()
-    .pattern(/^[a-zA-Z]+$/)
+    .pattern(/^(?! )[A-Za-z\s]+$/)
     .required(),
   password: joi.string().alphanum().min(6).required(),
   national_id: joi.number().required(),
@@ -41,7 +41,7 @@ const adminSchema = joi.object({
 
 const adminUpdateSchema = joi.object({
   email: joi.string().email(),
-  name: joi.string().pattern(/^[a-zA-Z]+$/),
+  name: joi.string().pattern(/^(?! )[A-Za-z\s]+$/),
   password: joi.string().alphanum().min(6),
   avatar_image: joi.string(),
   blocked: joi.boolean(),
