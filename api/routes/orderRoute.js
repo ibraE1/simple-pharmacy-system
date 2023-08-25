@@ -17,6 +17,10 @@ import {
   orderSchema,
   orderUpdateSchema,
 } from "../middlewares/validationMiddleware.js";
+import {
+  saveOrderPhoto,
+  uploadOrderPhoto,
+} from "../middlewares/imageMiddleware.js";
 
 const router = express.Router();
 
@@ -26,6 +30,8 @@ router.post(
   "/",
   restrictFields(["doctor", "admin"], ["status", "items"]),
   validateBody(orderSchema),
+  uploadOrderPhoto,
+  saveOrderPhoto,
   createOrder
 );
 
@@ -36,9 +42,11 @@ router.get("/:id", validateId(), getOrder);
 router.patch(
   "/:id",
   validateId(),
-  restrictFields(["admin"], ["address", "image"]),
-  restrictFields([], ["id"]),
+  restrictFields(["admin"], ["address"]),
+  restrictFields([], ["id", "image"]),
   validateBody(orderUpdateSchema),
+  uploadOrderPhoto,
+  saveOrderPhoto,
   updateOrder
 );
 

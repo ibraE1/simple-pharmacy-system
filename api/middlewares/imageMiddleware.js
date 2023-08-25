@@ -34,4 +34,19 @@ const resizeUserPhoto = async (req, res, next) => {
   next();
 };
 
-export { uploadUserPhoto, resizeUserPhoto };
+const uploadOrderPhoto = upload.single("image");
+
+const saveOrderPhoto = async (req, res, next) => {
+  if (!req.file) return next();
+
+  req.body.image = `images/orders/order-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/${req.body.image}`);
+
+  next();
+};
+
+export { uploadUserPhoto, resizeUserPhoto, uploadOrderPhoto, saveOrderPhoto };
