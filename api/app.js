@@ -1,5 +1,7 @@
 import express, { json, urlencoded } from "express";
 import { config } from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import userRouter from "./routes/userRoute.js";
@@ -8,12 +10,15 @@ import orderRouter from "./routes/orderRoute.js";
 import medicineRouter from "./routes/medicineRoute.js";
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 config();
 
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);

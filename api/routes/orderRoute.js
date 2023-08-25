@@ -37,7 +37,7 @@ router.patch(
   "/:id",
   validateId(),
   restrictFields(["admin"], ["address", "image"]),
-  restrictFields([], ["user_id"]),
+  restrictFields([], ["id"]),
   validateBody(orderUpdateSchema),
   updateOrder
 );

@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar_image: {
       type: String,
-      default: "default.jpg",
+      default: "images/default.jpg",
     },
     addresses: {
       type: [String],

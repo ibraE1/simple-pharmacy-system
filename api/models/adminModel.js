@@ -27,7 +27,7 @@ const adminSchema = new mongoose.Schema({
   },
   avatar_image: {
     type: String,
-    default: "default.jpg",
+    default: "images/default.jpg",
   },
   blocked: {
     type: Boolean,

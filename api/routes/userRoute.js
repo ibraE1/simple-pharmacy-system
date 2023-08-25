@@ -18,6 +18,10 @@ import {
   validateId,
 } from "../middlewares/validationMiddleware.js";
 import { getAllOrders } from "../controllers/orderController.js";
+import {
+  uploadUserPhoto,
+  resizeUserPhoto,
+} from "../middlewares/imageMiddleware.js";
 
 const router = express.Router();
 
@@ -27,14 +31,20 @@ router.post("/login", userLogin);
 
 router.use(verifyToken);
 
-router.get(
-  "/me",
-  (req, res, next) => {
+router
+  .route("/me")
+  .all((req, res, next) => {
     req.params.id = req.user.id;
     next();
-  },
-  getUser
-);
+  })
+  .get(getUser)
+  .patch(
+    restrictFields([], ["id"]),
+    validateBody(userUpdateSchema),
+    uploadUserPhoto,
+    resizeUserPhoto,
+    updateUser
+  );
 
 router.get(
   "/me/orders",
@@ -68,12 +78,10 @@ router
   .route("/:id")
   .all(validateId())
   .patch(
-    restrictFields(
-      ["admin"],
-      ["name", "email", "national_id", "addresses", "avatar_image"]
-    ),
-    restrictFields([], ["user_id"]),
+    restrictFields([], ["id"]),
     validateBody(userUpdateSchema),
+    uploadUserPhoto,
+    resizeUserPhoto,
     updateUser
   )
   .delete(deleteUser);

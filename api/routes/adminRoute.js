@@ -14,6 +14,10 @@ import {
   adminSchema,
   adminUpdateSchema,
 } from "../middlewares/validationMiddleware.js";
+import {
+  resizeUserPhoto,
+  uploadUserPhoto,
+} from "../middlewares/imageMiddleware.js";
 
 const router = express.Router();
 
@@ -33,7 +37,12 @@ router
 router
   .route("/:id")
   .all(validateId())
-  .patch(validateBody(adminUpdateSchema), updateAdmin)
+  .patch(
+    validateBody(adminUpdateSchema),
+    uploadUserPhoto,
+    resizeUserPhoto,
+    updateAdmin
+  )
   .delete(deleteAdmin);
 
 export default router;
