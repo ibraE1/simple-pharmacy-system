@@ -1,4 +1,5 @@
 const errorHandler = (err, req, res, next) => {
+  console.log(err);
   if (err.code == 11000) {
     err.statusCode = 400;
     err.message = `${JSON.stringify(err.keyValue)} is already registered`;

@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
+import cron from "node-cron";
 import mongoose from "mongoose";
 import userRouter from "./routes/userRoute.js";
 import adminRouter from "./routes/adminRoute.js";
@@ -10,6 +11,7 @@ import orderRouter from "./routes/orderRoute.js";
 import medicineRouter from "./routes/medicineRoute.js";
 import errorHandler from "./middlewares/errorMiddleware.js";
 import AppError from "./utils/errorFactory.js";
+import { notifyUsers } from "./controllers/userController.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -33,7 +35,10 @@ app.all("*", (req, res, next) => {
 
 app.use(errorHandler);
 
-const port = 5000;
+cron.schedule("0 1 * * *", () => {
+  notifyUsers();
+  console.log("scheduled emails sent");
+});
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -42,8 +47,8 @@ mongoose
     dbName: "simple-pharmacy-system",
   })
   .then(() => {
-    app.listen(port, () => {
-      console.log(`App listening at http://localhost:${port}`);
+    app.listen(process.env.PORT, () => {
+      console.log(`App listening at http://localhost:${process.env.PORT}`);
     });
   })
   .catch((error) => {

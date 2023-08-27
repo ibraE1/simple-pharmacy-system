@@ -3,6 +3,7 @@ import Admin from "../models/adminModel.js";
 import jwt from "jsonwebtoken";
 import expressAsyncHandler from "express-async-handler";
 import AppError from "../utils/errorFactory.js";
+import Email from "../utils/email.js";
 
 const signup = expressAsyncHandler(async (req, res) => {
   try {
@@ -21,6 +22,10 @@ const signup = expressAsyncHandler(async (req, res) => {
   });
 
   newUser.password = undefined;
+
+  const url = `${req.protocol}://${req.get("host")}/me`;
+  await new Email(newUser, url).sendWelcome();
+
   return res.status(201).json(newUser);
 });
 
