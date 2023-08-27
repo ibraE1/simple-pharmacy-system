@@ -1,11 +1,13 @@
 import User from "../models/userModel.js";
 import Admin from "../models/adminModel.js";
 import jwt from "jsonwebtoken";
+import expressAsyncHandler from "express-async-handler";
+import AppError from "../utils/errorFactory.js";
 
-const verifyToken = async (req, res, next) => {
+const verifyToken = expressAsyncHandler(async (req, res, next) => {
   const token = req.cookies.jwt;
   if (!token) {
-    return res.status(400).json("Please login to access this resource");
+    next(new AppError(401, "Please login to access this resource"));
   }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -14,24 +16,25 @@ const verifyToken = async (req, res, next) => {
   if (!currentUser) {
     currentUser = await Admin.findById(decoded.id);
     if (!currentUser) {
-      return res
-        .status(400)
-        .json(
+      next(
+        new AppError(
+          403,
           "Your account no longer exists, please login using a different account"
-        );
+        )
+      );
     }
   }
   req.user = currentUser;
 
   next();
-};
+});
 
 const restrictTo = (roles) => {
   return (req, res, next) => {
     if (!req.user.role || !roles.includes(req.user.role)) {
-      return res
-        .status(400)
-        .json("You do not have permission to access this resource");
+      next(
+        new AppError(403, "You do not have permission to access this resource")
+      );
     }
     next();
   };
@@ -41,9 +44,7 @@ const restrictFields = (roles, fields) => {
   return (req, res, next) => {
     for (let key of Object.keys(req.body)) {
       if (fields.includes(key) && !roles.includes(req.user.role)) {
-        return res
-          .status(400)
-          .json("You do not have permission to modify " + key);
+        next(new AppError(403, "You do not have permission to modify " + key));
       }
     }
     next();

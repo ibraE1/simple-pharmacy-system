@@ -8,6 +8,8 @@ import userRouter from "./routes/userRoute.js";
 import adminRouter from "./routes/adminRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import medicineRouter from "./routes/medicineRoute.js";
+import errorHandler from "./middlewares/errorMiddleware.js";
+import AppError from "./utils/errorFactory.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -24,6 +26,12 @@ app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/order", orderRouter);
 app.use("/medicine", medicineRouter);
+
+app.all("*", (req, res, next) => {
+  next(new AppError(404, `Cannot find ${req.originalUrl} on this server`));
+});
+
+app.use(errorHandler);
 
 const port = 5000;
 

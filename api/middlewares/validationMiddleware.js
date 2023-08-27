@@ -1,5 +1,6 @@
 import joi from "joi";
 import objectId from "joi-objectid";
+import AppError from "../utils/errorFactory.js";
 
 joi.objectId = objectId(joi);
 
@@ -103,11 +104,11 @@ const medicineUpdateSchema = joi.object({
 
 const validateBody = (schema) => {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body);
+    const { error } = schema.validate(req.body, { abortEarly: false });
     const valid = error == null;
 
     if (!valid) {
-      return res.status(400).json(error.message);
+      next(new AppError(400, error.message));
     }
 
     next();
@@ -120,7 +121,7 @@ const validateId = () => {
     const valid = error == null;
 
     if (!valid) {
-      return res.status(400).json("invalid id pattern");
+      next(new AppError(400, "invalid id pattern"));
     }
 
     next();

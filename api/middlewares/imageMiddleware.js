@@ -1,5 +1,7 @@
+import expressAsyncHandler from "express-async-handler";
 import multer from "multer";
 import sharp from "sharp";
+import AppError from "../utils/errorFactory.js";
 
 const multerStorage = multer.memoryStorage();
 
@@ -7,7 +9,7 @@ const multerFilter = (req, file, cb) => {
   if (["jpeg", "png"].includes(file.mimetype.split("/")[1])) {
     cb(null, true);
   } else {
-    cb(res.status(400).json("Please upload a png or jpg image"), false);
+    cb(next(new AppError(400, "Please upload a png or jpg image")), false);
   }
   console.log("filter");
 };
@@ -19,7 +21,7 @@ const upload = multer({
 
 const uploadUserPhoto = upload.single("avatar_image");
 
-const resizeUserPhoto = async (req, res, next) => {
+const resizeUserPhoto = expressAsyncHandler(async (req, res, next) => {
   if (!req.file) return next();
 
   const role = req.user.role;
@@ -32,11 +34,11 @@ const resizeUserPhoto = async (req, res, next) => {
     .toFile(`public/${req.body.avatar_image}`);
 
   next();
-};
+});
 
 const uploadOrderPhoto = upload.single("image");
 
-const saveOrderPhoto = async (req, res, next) => {
+const saveOrderPhoto = expressAsyncHandler(async (req, res, next) => {
   if (!req.file) return next();
 
   req.body.image = `images/orders/order-${req.user.id}-${Date.now()}.jpeg`;
@@ -47,6 +49,6 @@ const saveOrderPhoto = async (req, res, next) => {
     .toFile(`public/${req.body.image}`);
 
   next();
-};
+});
 
 export { uploadUserPhoto, resizeUserPhoto, uploadOrderPhoto, saveOrderPhoto };
