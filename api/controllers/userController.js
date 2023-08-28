@@ -2,10 +2,11 @@ import expressAsyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
 import { getOne, getAll, updateOne, deleteOne } from "../utils/factory.js";
 import Email from "../utils/email.js";
+import AppError from "../utils/errorFactory.js";
 
 // const createUser = async (req, res) => {}; USING SIGNUP
 
-const getUser = getOne(User, "orders");
+const getUser = getOne(User, ["orders"]);
 
 const getAllUsers = getAll(User);
 
@@ -28,5 +29,12 @@ const notifyUsers = expressAsyncHandler(async () => {
     }
   }
 });
+
+// user/:id/orders
+// order/:id
+
+// order.user_id == req.user.id
+
+// /users/:id/sendconfirm
 
 export { getUser, getAllUsers, updateUser, deleteUser, notifyUsers };

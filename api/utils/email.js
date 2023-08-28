@@ -45,12 +45,16 @@ class Email {
     return this.newTransport().sendMail(mailOptions);
   }
 
+  async sendConfirmation() {
+    await this.send("confirm", "Order Confirmation");
+  }
+
   async sendWelcome() {
-    await this.send("welcome", "Welcome to the pharmacy!");
+    await this.send("welcome", "Welcome to The Pharmacy!");
   }
 
   async sendNotification() {
-    await this.send("notification", "We miss you!");
+    await this.send("notification", "We Miss You!");
   }
 }
 

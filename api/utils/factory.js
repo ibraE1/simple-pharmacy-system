@@ -13,8 +13,8 @@ const createOne = (Model) => {
 const getOne = (Model, pop, popOptions = {}) => {
   return expressAsyncHandler(async (req, res) => {
     let query = Model.findById(req.params.id);
-    if (pop) {
-      query = query.populate(pop, popOptions);
+    for (let field of pop) {
+      query = query.populate(field, popOptions);
     }
     const document = await query;
     if (!document) {
