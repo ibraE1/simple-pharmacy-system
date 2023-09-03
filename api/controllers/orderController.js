@@ -18,7 +18,7 @@ const getAllOrders = getAll(Order);
 
 // const updateOrder = updateOne(Order);
 
-const updateOrder = expressAsyncHandler(async (req, res) => {
+const updateOrder = expressAsyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate([
     "items.medicine_id",
     "user_id",

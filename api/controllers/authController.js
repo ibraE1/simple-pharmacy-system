@@ -5,7 +5,7 @@ import expressAsyncHandler from "express-async-handler";
 import AppError from "../utils/errorFactory.js";
 import Email from "../utils/email.js";
 
-const signup = expressAsyncHandler(async (req, res) => {
+const signup = expressAsyncHandler(async (req, res, next) => {
   try {
     await User.findOne({ email: req.body.email });
   } catch (error) {
@@ -29,7 +29,7 @@ const signup = expressAsyncHandler(async (req, res) => {
   return res.status(201).json(newUser);
 });
 
-const userLogin = expressAsyncHandler(async (req, res) => {
+const userLogin = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     next(new AppError(400, "Please enter email and password"));
@@ -55,7 +55,7 @@ const userLogin = expressAsyncHandler(async (req, res) => {
   return res.status(200).json({ token, data: { user } });
 });
 
-const adminLogin = expressAsyncHandler(async (req, res) => {
+const adminLogin = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     next(new AppError(400, "Please enter email and password"));

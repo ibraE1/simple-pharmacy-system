@@ -11,7 +11,7 @@ const createOne = (Model) => {
 };
 
 const getOne = (Model, pop, popOptions = {}) => {
-  return expressAsyncHandler(async (req, res) => {
+  return expressAsyncHandler(async (req, res, next) => {
     let query = Model.findById(req.params.id);
     for (let field of pop) {
       query = query.populate(field, popOptions);
@@ -34,7 +34,7 @@ const getAll = (Model) => {
 };
 
 const updateOne = (Model) => {
-  return expressAsyncHandler(async (req, res) => {
+  return expressAsyncHandler(async (req, res, next) => {
     const document = await Model.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
@@ -52,7 +52,7 @@ const updateOne = (Model) => {
 };
 
 const deleteOne = (Model) => {
-  return expressAsyncHandler(async (req, res) => {
+  return expressAsyncHandler(async (req, res, next) => {
     const document = await Model.findByIdAndDelete(req.params.id);
     if (!document) {
       next(new AppError(400, "No document found with that ID"));
