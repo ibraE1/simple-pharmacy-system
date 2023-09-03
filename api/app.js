@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import cron from "node-cron";
+import cors from "cors";
 import mongoose from "mongoose";
 import userRouter from "./routes/userRoute.js";
 import adminRouter from "./routes/adminRoute.js";
@@ -23,6 +24,7 @@ app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
 
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
