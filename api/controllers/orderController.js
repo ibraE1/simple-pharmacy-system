@@ -25,16 +25,16 @@ const updateOrder = expressAsyncHandler(async (req, res, next) => {
   ]);
 
   if (!order) {
-    next(new AppError(400, "No document found with that ID"));
+    return next(new AppError(400, "No document found with that ID"));
   }
 
   const status = order.status;
   if (["Confirmed", "Canceled", "Delivered"].includes(status)) {
-    next(new AppError(400, `${status} orders cannot be updated`));
+    return next(new AppError(400, `${status} orders cannot be updated`));
   }
 
   if (status == "Processing" && !req.user.role && req.body.status) {
-    next(
+    return next(
       new AppError(403, "You do not have permission to update order status")
     );
   }

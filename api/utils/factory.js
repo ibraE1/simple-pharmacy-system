@@ -18,7 +18,7 @@ const getOne = (Model, pop, popOptions = {}) => {
     }
     const document = await query;
     if (!document) {
-      next(new AppError(400, "No document found with that ID"));
+      return next(new AppError(400, "No document found with that ID"));
     }
 
     res.status(200).json(document);
@@ -44,7 +44,7 @@ const updateOne = (Model) => {
       }
     );
     if (!document) {
-      next(new AppError(400, "No document found with that ID"));
+      return next(new AppError(400, "No document found with that ID"));
     }
 
     res.status(200).json(document);
@@ -55,7 +55,7 @@ const deleteOne = (Model) => {
   return expressAsyncHandler(async (req, res, next) => {
     const document = await Model.findByIdAndDelete(req.params.id);
     if (!document) {
-      next(new AppError(400, "No document found with that ID"));
+      return next(new AppError(400, "No document found with that ID"));
     }
 
     res.status(200).json(null);

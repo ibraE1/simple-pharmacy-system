@@ -9,7 +9,7 @@ const signup = expressAsyncHandler(async (req, res, next) => {
   try {
     await User.findOne({ email: req.body.email });
   } catch (error) {
-    next(new AppError(400, "This email is already registered"));
+    return next(new AppError(400, "This email is already registered"));
   }
 
   const newUser = await User.create({
@@ -32,12 +32,12 @@ const signup = expressAsyncHandler(async (req, res, next) => {
 const userLogin = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    next(new AppError(400, "Please enter email and password"));
+    return next(new AppError(400, "Please enter email and password"));
   }
 
   let user = await User.findOne({ email }).select("+password");
   if (!user || !(await user.comparePassword(password, user.password))) {
-    next(new AppError(400, "Incorrect email or password"));
+    return next(new AppError(400, "Incorrect email or password"));
   }
 
   user.last_login = new Date(Date.now());
@@ -58,15 +58,15 @@ const userLogin = expressAsyncHandler(async (req, res, next) => {
 const adminLogin = expressAsyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    next(new AppError(400, "Please enter email and password"));
+    return next(new AppError(400, "Please enter email and password"));
   }
 
   let user = await Admin.findOne({ email }).select("+password");
   if (!user || !(await user.comparePassword(password, user.password))) {
-    next(new AppError(400, "Incorrect email or password"));
+    return next(new AppError(400, "Incorrect email or password"));
   }
   if (user.blocked == true) {
-    next(new AppError(403, "This account has been blocked"));
+    return next(new AppError(403, "This account has been blocked"));
   }
   user.last_login = new Date(Date.now());
   await user.save();
