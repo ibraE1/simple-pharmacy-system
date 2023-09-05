@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createUser, getCurrentUser, userLogin } from "../api/userAPI";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../api/adminAPI";
+import { createOrder } from "../api/orderAPI";
 
 const userKey = ["authenticated-user"];
 
@@ -17,8 +18,8 @@ const useLogin = (loginAs, options = {}) => {
 
   return useMutation(loginFn, {
     ...options,
-    onSuccess: (user) => {
-      setUser(user);
+    onSuccess: (data) => {
+      setUser(data.user);
       navigate("/home");
     },
   });
@@ -36,6 +37,15 @@ const useRegister = (options = {}) => {
   });
 };
 
+const usePlaceOrder = (options = {}) => {
+  return useMutation(createOrder, {
+    ...options,
+    onSuccess: () => {
+      alert("Order Placed");
+    },
+  });
+};
+
 //   const useLogout = (options = {}) => {
 //     const queryClient = useQueryClient();
 
@@ -47,4 +57,4 @@ const useRegister = (options = {}) => {
 //     });
 //   };
 
-export { useRegister, useLogin, useUser };
+export { useRegister, useLogin, useUser, usePlaceOrder };

@@ -28,8 +28,10 @@ const userLogin = async (userInfo) => {
       },
     });
 
+    console.log(res.headers.getSetCookie());
+
     if (!res.ok) throw Error();
-    const { data } = await res.json();
+    const data = await res.json();
     return data;
   } catch {
     throw Error("Failed to log in");
@@ -41,7 +43,8 @@ const getCurrentUser = async () => {
     const res = await fetch(`${API_URL}/user/me`);
 
     if (!res.ok) throw Error();
-    const { data } = await res.json();
+    const data = await res.json();
+    console.log(data);
     return data;
   } catch {
     throw Error("Failed to get authenticated user");
