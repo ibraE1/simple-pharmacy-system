@@ -18,7 +18,7 @@ const createUser = async (newUser) => {
   }
 };
 
-const login = async (userInfo) => {
+const userLogin = async (userInfo) => {
   try {
     const res = await fetch(`${API_URL}/user/login`, {
       method: "POST",
@@ -36,4 +36,16 @@ const login = async (userInfo) => {
   }
 };
 
-export { createUser, login };
+const getCurrentUser = async () => {
+  try {
+    const res = await fetch(`${API_URL}/user/me`);
+
+    if (!res.ok) throw Error();
+    const { data } = await res.json();
+    return data;
+  } catch {
+    throw Error("Failed to get authenticated user");
+  }
+};
+
+export { createUser, userLogin, getCurrentUser };

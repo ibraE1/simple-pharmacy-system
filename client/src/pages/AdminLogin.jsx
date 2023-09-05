@@ -1,22 +1,15 @@
-import { Link } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { login } from "../api/userAPI";
+import { useLogin } from "../hooks/apiHooks";
 
-const Login = () => {
+const UserLogin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const { mutate: loginMutation, isLoading } = useMutation({
-    mutationFn: login,
-    onSuccess: () => {
-      alert("login Successful");
-    },
-  });
+  const { mutate: loginMutation, isLoading } = useLogin("admin");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,9 +21,9 @@ const Login = () => {
     loginMutation(formData);
   };
   return (
-    <div className="flex flex-col items-center justify-around w-4/5 px-8 bg-white border rounded-lg lg:w-4/5 border-slate-300 h-4/5">
+    <div className="flex flex-col items-center w-4/5 px-8 bg-white border rounded-lg justify-evenly lg:w-4/5 border-slate-300 h-4/5">
       <h1 className="text-2xl font-extrabold text-center text-sky-500 font-display whitespace-nowrap">
-        Log In To Your Account
+        Log In As Admin
       </h1>
       <form
         className="flex flex-col items-center w-full gap-4 sm:w-4/5"
@@ -56,14 +49,8 @@ const Login = () => {
           Login
         </Button>
       </form>
-      <p className="text-sm whitespace-nowrap">
-        {"Don't have an account? "}
-        <Link className="text-sky-400 hover:underline" to={"/signup"}>
-          Sign up here
-        </Link>
-      </p>
     </div>
   );
 };
 
-export default Login;
+export default UserLogin;

@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { createUser } from "../api/userAPI";
+import { useRegister } from "../hooks/apiHooks";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -14,12 +13,7 @@ const Signup = () => {
     addresses: [],
   });
 
-  const { mutate: signupUserMutation, isLoading } = useMutation({
-    mutationFn: createUser,
-    onSuccess: () => {
-      alert("Registration Successful");
-    },
-  });
+  const { mutate: signupUserMutation, isLoading } = useRegister();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
