@@ -1,5 +1,9 @@
 import express from "express";
-import { restrictTo, verifyToken } from "../middlewares/authMiddleware.js";
+import {
+  restrictFields,
+  restrictTo,
+  verifyToken,
+} from "../middlewares/authMiddleware.js";
 import {
   createAdmin,
   getAdmin,
@@ -27,6 +31,21 @@ router.use(verifyToken);
 
 router.use(restrictTo(["admin"]));
 
+router
+  .route("/me")
+  .all((req, res, next) => {
+    req.params.id = req.user.id;
+    next();
+  })
+  .get(getAdmin)
+  .patch(
+    restrictFields([], ["id"]),
+    uploadUserPhoto,
+    resizeUserPhoto,
+    validateBody(adminUpdateSchema),
+    updateAdmin
+  );
+
 router.get("/:id", validateId(), getAdmin);
 
 router
@@ -38,9 +57,10 @@ router
   .route("/:id")
   .all(validateId())
   .patch(
-    validateBody(adminUpdateSchema),
+    restrictFields([], ["id"]),
     uploadUserPhoto,
     resizeUserPhoto,
+    validateBody(adminUpdateSchema),
     updateAdmin
   )
   .delete(deleteAdmin);
