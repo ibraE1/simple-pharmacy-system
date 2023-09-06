@@ -11,7 +11,6 @@ const multerFilter = (req, file, cb) => {
   } else {
     cb(next(new AppError(400, "Please upload a png or jpg image")), false);
   }
-  console.log("filter");
 };
 
 const upload = multer({

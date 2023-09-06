@@ -28,10 +28,9 @@ const userLogin = async (userInfo) => {
       },
     });
 
-    console.log(res.headers.getSetCookie());
-
     if (!res.ok) throw Error();
-    const data = await res.json();
+    const { token, data } = await res.json();
+    localStorage.setItem("jwt", token);
     return data;
   } catch {
     throw Error("Failed to log in");
@@ -40,11 +39,14 @@ const userLogin = async (userInfo) => {
 
 const getCurrentUser = async () => {
   try {
-    const res = await fetch(`${API_URL}/user/me`);
+    const res = await fetch(`${API_URL}/user/me`, {
+      headers: {
+        Authentication: "Bearer " + localStorage.getItem("jwt"),
+      },
+    });
 
     if (!res.ok) throw Error();
     const data = await res.json();
-    console.log(data);
     return data;
   } catch {
     throw Error("Failed to get authenticated user");

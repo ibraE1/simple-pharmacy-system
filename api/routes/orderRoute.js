@@ -29,9 +29,9 @@ router.use(verifyToken);
 router.post(
   "/",
   restrictFields(["doctor", "admin"], ["status", "items"]),
-  validateBody(orderSchema),
   uploadOrderPhoto,
   saveOrderPhoto,
+  validateBody(orderSchema),
   createOrder
 );
 
@@ -44,9 +44,9 @@ router.patch(
   validateId(),
   restrictFields(["admin"], ["address"]),
   restrictFields([], ["id", "image"]),
-  validateBody(orderUpdateSchema),
   uploadOrderPhoto,
   saveOrderPhoto,
+  validateBody(orderUpdateSchema),
   updateOrder
 );
 

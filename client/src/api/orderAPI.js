@@ -2,11 +2,11 @@ const API_URL = "http://localhost:5000";
 
 const createOrder = async (newOrder) => {
   try {
-    const res = await fetch(`${API_URL}/order/`, {
+    const res = await fetch(`${API_URL}/order`, {
       method: "POST",
-      body: JSON.stringify(newOrder),
+      body: newOrder,
       headers: {
-        "Content-Type": "application/json",
+        Authentication: "Bearer " + localStorage.getItem("jwt"),
       },
     });
 

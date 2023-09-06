@@ -40,9 +40,9 @@ router
   .get(getUser)
   .patch(
     restrictFields([], ["id"]),
-    validateBody(userUpdateSchema),
     uploadUserPhoto,
     resizeUserPhoto,
+    validateBody(userUpdateSchema),
     updateUser
   );
 
@@ -79,9 +79,9 @@ router
   .all(validateId())
   .patch(
     restrictFields([], ["id"]),
-    validateBody(userUpdateSchema),
     uploadUserPhoto,
     resizeUserPhoto,
+    validateBody(userUpdateSchema),
     updateUser
   )
   .delete(deleteUser);

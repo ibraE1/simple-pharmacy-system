@@ -49,7 +49,6 @@ const userLogin = expressAsyncHandler(async (req, res, next) => {
 
   res.cookie("jwt", token, {
     maxAge: 1 * 60 * 60 * 1000,
-    httpOnly: true,
   });
 
   return res.status(200).json({ token, data: { user } });
