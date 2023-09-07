@@ -53,4 +53,20 @@ const getCurrentUser = async () => {
   }
 };
 
-export { createUser, userLogin, getCurrentUser };
+const getCurrentUserOrders = async () => {
+  try {
+    const res = await fetch(`${API_URL}/user/me/orders`, {
+      headers: {
+        Authentication: "Bearer " + localStorage.getItem("jwt"),
+      },
+    });
+
+    if (!res.ok) throw Error();
+    const data = await res.json();
+    return data;
+  } catch {
+    throw Error("Failed to get orders");
+  }
+};
+
+export { createUser, userLogin, getCurrentUser, getCurrentUserOrders };

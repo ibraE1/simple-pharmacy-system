@@ -8,6 +8,7 @@ import AdminLogin from "./pages/AdminLogin";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PlaceOrder from "./pages/PlaceOrder";
+import OrderHistory from "./pages/OrderHistory";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => {
           >
             <Route path="/home" />
             <Route path="/order/place" element={<PlaceOrder />} />
+            <Route path="/user/history" element={<OrderHistory />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

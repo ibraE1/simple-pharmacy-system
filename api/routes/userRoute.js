@@ -22,6 +22,11 @@ import {
   uploadUserPhoto,
   resizeUserPhoto,
 } from "../middlewares/imageMiddleware.js";
+import { getOne } from "../utils/factory.js";
+import User from "../models/userModel.js";
+import expressAsyncHandler from "express-async-handler";
+import { applyOptions } from "../utils/queryOptions.js";
+import orderModel from "../models/orderModel.js";
 
 const router = express.Router();
 
@@ -37,7 +42,7 @@ router
     req.params.id = req.user.id;
     next();
   })
-  .get(getUser)
+  .get(getOne(User))
   .patch(
     restrictFields([], ["id"]),
     uploadUserPhoto,
@@ -53,7 +58,11 @@ router.get(
     req.query.user_id = req.user.id;
     next();
   },
-  getAllOrders
+  expressAsyncHandler(async (req, res) => {
+    const query = applyOptions(orderModel.find(), req);
+    const documents = await query.populate("items.medicine_id");
+    res.status(200).json({ results: documents.length, data: documents });
+  })
 );
 
 router.use(restrictTo(["doctor", "admin"]));
